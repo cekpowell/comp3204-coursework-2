@@ -7,6 +7,9 @@ import org.openimaj.image.DisplayUtilities;
 import org.openimaj.image.FImage;
 import org.openimaj.image.ImageUtilities;
 import org.openimaj.image.MBFImage;
+import org.openimaj.image.processing.convolution.FConvolution;
+import org.openimaj.image.processing.convolution.FSobel;
+import org.openimaj.image.processing.convolution.Gaussian2D;
 
 /**
  * Tester class for project.
@@ -23,9 +26,9 @@ public class Tester {
      * @param args System arguments.
      */
     public static void main( String[] args ) throws Exception {
-        //Tester.testMyConvolution();
+        Tester.testMyConvolution();
 
-        Tester.testMyHybridImages();
+        //Tester.testMyHybridImages();
     }
 
     ///////////////////
@@ -35,10 +38,32 @@ public class Tester {
     /**
      * Tester method for MyConvolution class.
      */
-    public static void testMyConvolution() throws Exception{
+    private static void testMyConvolution() throws Exception{
+
         ////////////////////
         // SAMPLE KERNELS //
         ////////////////////
+
+        // column shift
+        float[][] colShiftKernel = {
+                                   {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+                                   };
+
+        // column shift
+        float[][] rowShiftKernel = {
+                                   {0}, {0}, {0}, {0},{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {1}
+                                   };
+
+        // empty kernel
+        float[][] emptyKernel = {{}};
+
+        // single kernel
+        float[][] singleKernel = {{1}};
+    
+        // non-square kernel
+        float[][] nonSquareKernel = {
+                                    {1,2,3}
+                                    };
 
         // sobel
         float[][] sobelKernel = {
@@ -47,8 +72,11 @@ public class Tester {
                                 {0,-2,-2}
                                 };
 
-        // averaging
-        float[][] meanAverageKernel = {
+        // mean average 3x3
+        float[][] meanAverage3Kernel = {{0.11F,0.11F,0.11F},{0.11F,0.11F,0.11F},{0.11F,0.11F,0.11F}};
+
+        // mean averaging 5x5
+        float[][] meanAverage5Kernel = {
                                       {0.04F,0.04F,0.04F,0.04F,0.04F},
                                       {0.04F,0.04F,0.04F,0.04F,0.04F},
                                       {0.04F,0.04F,0.04F,0.04F,0.04F},
@@ -56,22 +84,11 @@ public class Tester {
                                       {0.04F,0.04F,0.04F,0.04F,0.04F}
                                       };
 
-        // non-uniform
-        float[][] nonUniformKernel = {
-                                     {1,2,3,4,5},
-                                     {1,2,3,4,5},
-                                     {1,2,3,4,5}
-                                     };
-        
-        // column shift
-        float[][] colShiftKernel = {
-                                      {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-                                      };
-        
-        // column shift
-        float[][] rowShiftKernel = {
-                                    {0}, {0}, {0}, {0},{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {1}
-                                    };
+        // gaussian averaging
+        float[][] gaussianAveragingKernel = Gaussian2D.createKernelImage(3, 1.4F).pixels;
+
+        // chosen kernel
+        float[][] kernel = rowShiftKernel;
 
         //////////////////
         // SAMPLE IMAGE //
@@ -81,24 +98,67 @@ public class Tester {
         FImage image;
 
         // loading image from url
-        image = ImageUtilities.readF(new URL("https://www.researchgate.net/profile/Cataldo-Guaragnella/publication/235406965/figure/fig1/AS:393405046771720@1470806480985/Original-image-256x256-pixels.png"));
+        image = ImageUtilities.readF(new URL("https://www.aclens.com/u/media/2235/aclens-eyecolors-brown.jpg"));
+
+        //loading image from pixel values
+        float[][] pixelValues = {
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F,0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F, 0.1F,0.2F,0.3F,0.4F},
+                                 {0.1F,0.2F,0.3F,0.4F,0.1F,0.2F,0.3F,0.4F}
+                                };
+        //image = new FImage(pixelValues);
+
+        //////////////////////////////////////
+        // PROCESSING IMAGE WITH MY METHODS //
+        //////////////////////////////////////
 
         // copy of sample image
-        FImage rawImage = image.clone();
-
-        //////////////////////
-        // PROCESSING IMAGE //
-        //////////////////////
+        FImage myProcessedImage = image.clone();
 
         // my convolution instance
-        MyConvolution myConvolution = new MyConvolution(rowShiftKernel);
+        MyConvolution myConvolution = new MyConvolution(kernel);
 
         // processing the sample image
-        myConvolution.processImage(image);
+        myConvolution.processImage(myProcessedImage);
 
         // displaying the raw and processed image
-        DisplayUtilities.display(rawImage, "Raw Image");
-        DisplayUtilities.display(image, "Processed Image");
+        DisplayUtilities.display(image, "Raw Image");
+        DisplayUtilities.display(myProcessedImage, "My Processed Image");
+
+        ///////////////////////////////////////////
+        // PROCESSING IMAGE WITH LIBRARY METHODS //
+        ///////////////////////////////////////////
+
+        // cloning the raw image
+        FImage libraryProcessedImage = image.clone();
+
+        // performing convolution with the kernel
+        FConvolution fConvolution = new FConvolution(kernel);
+        fConvolution.processImage(libraryProcessedImage);
+
+        // displaying the processed image
+        DisplayUtilities.display(libraryProcessedImage, "FConvolution Processed Image");
+
+        ///////////////////////
+        // COMPARING RESULTS //
+        ///////////////////////
+
+        System.out.println("My Processed Values :");
+
+        Tester.printMatrix(myProcessedImage.pixels);
+
+        System.out.println("FConvolution Processed Values : ");
+
+        Tester.printMatrix(libraryProcessedImage.pixels);
+
+        System.out.println("Comparison Matrix : ");
+
+        Tester.printMatrix(Tester.compareImages(myProcessedImage, libraryProcessedImage));
     }
 
     /////////////////////
@@ -108,10 +168,10 @@ public class Tester {
     /**
      * Tester method for MyHybridImages class.
      */
-    public static void testMyHybridImages() throws Exception{
-        ///////////////
-        // LOW IMAGE //
-        ///////////////
+    private static void testMyHybridImages() throws Exception{
+        //////////////////////
+        // SAMPLE LOW IMAGE //
+        //////////////////////
 
         // creating image object
         MBFImage lowImage;
@@ -119,9 +179,9 @@ public class Tester {
         // loading image from url
         lowImage = ImageUtilities.readMBF(new URL("http://comp3204.ecs.soton.ac.uk/cw/dog.jpg"));
 
-        ////////////////
-        // HIGH IMAGE //
-        ////////////////
+        ///////////////////////
+        // SAMPLE HIGH IMAGE //
+        ///////////////////////
 
         // creating image object
         MBFImage highImage;
@@ -135,7 +195,7 @@ public class Tester {
 
         MBFImage hybridImage = MyHybridImages.makeHybrid(lowImage, 5.0F, highImage, 5.0F);
 
-        DisplayUtilities.display(hybridImage);
+        DisplayUtilities.display(hybridImage, "Hybrid Image");
     }
 
     ////////////////////
@@ -147,63 +207,52 @@ public class Tester {
      * 
      * @param matrix The matrix being printed.
      */
-    public static void printMatrix(float[][] matrix){
+    private static void printMatrix(boolean[][] matrix){
+        for(boolean[] row : matrix){
+            System.out.println(Arrays.toString(row));
+        }
+    }
+
+    /**
+     * Prints a matrix to the screen.
+     * 
+     * @param matrix The matrix being printed.
+     */
+    private static void printMatrix(float[][] matrix){
         for(float[] row : matrix){
             System.out.println(Arrays.toString(row));
         }
     }
+
+    /**
+     * Compares two images of the same size to determine if they have the same pixel values.
+     * 
+     * @param image1 The first image being compared.
+     * @param image2 The second image being compared.
+     * @return A table of boolean values representing if the pixel values within the two images
+     * are the same.
+     */
+    private static boolean[][] compareImages(FImage image1, FImage image2){
+        boolean[][] comparisonMatrix = new boolean[image1.height][image1.width];
+
+        for(int row = 0; row < image1.height; row++){
+            for(int col = 0; col < image1.width; col++){
+                comparisonMatrix[row][col] = (image1.pixels[row][col] == image2.pixels[row][col]);
+            }
+        }
+
+        return comparisonMatrix;
+    }
 }
 
+////////////
+// IMAGES //
+////////////
+
 /**
- * Woman Image - https://www.researchgate.net/profile/Cataldo-Guaragnella/publication/235406965/figure/fig1/AS:393405046771720@1470806480985/Original-image-256x256-pixels.png
- * Discord Image - https://www.freepnglogos.com/uploads/discord-logo-png/papirus-apps-iconset-papirus-development-team-discord-icon-14.png
- * Cat image - http://comp3204.ecs.soton.ac.uk/cw/cat.jpg
- * Dog image - http://comp3204.ecs.soton.ac.uk/cw/dog.jpg
+ * Woman   - https://www.researchgate.net/profile/Cataldo-Guaragnella/publication/235406965/figure/fig1/AS:393405046771720@1470806480985/Original-image-256x256-pixels.png
+ * Discord - https://www.freepnglogos.com/uploads/discord-logo-png/papirus-apps-iconset-papirus-development-team-discord-icon-14.png
+ * Eye     - https://www.aclens.com/u/media/2235/aclens-eyecolors-brown.jpg
+ * Cat     - http://comp3204.ecs.soton.ac.uk/cw/cat.jpg
+ * Dog     - http://comp3204.ecs.soton.ac.uk/cw/dog.jpg
  * */ 
-
-
-// METHOD FOR PRODUCING GAUSSIAN KERNEL //
-
-
- // /**
-//      * Produces a Gaussian matrix of the provided dimension using the provided sigma value.
-//      * 
-//      * @param width The width of the Gaussian matrix.
-//      * @param height The height of the Gaussian matrix.
-//      * @param sigma The sigma value for the Gaussian matrix.
-//      * @return The Gaussian matrix of the requested matrix and sigma value.
-//      * 
-//      * // TODO this method assumes the width and height are both odd (i.e., that there is a center point to the matrix)
-//      */
-//     public static float[][] getGaussianMatrix(int width, int height, float sigma){
-//         // initializing matrix
-//         float[][] gaussianMatrix = new float[width][height];
-
-//         // how much to reach left/right and up/down from center point (half size of kernel)
-//         int reachCol = Math.floorDiv(width, 2);
-//         int reachRow = Math.floorDiv(height, 2);
-
-//         /**
-//          * Populating matrix
-//          */
-//         for(int row = 0; row < height; row++){
-//             for(int col = 0; col < width; col++){
-//                 // x and y values
-//                 int x = -reachCol + col;
-//                 int y = -reachRow + row;
-
-//                 // calculating value using gaussian distribution formula
-//                 float leftTerm = (1 / (2 * (float) Math.PI * sigma * sigma));
-//                 float exponentNumer = - (x*x) - (y*y);
-//                 float exponentDenom = 2 * sigma * sigma;
-//                 float rightTerm = (float) Math.pow(Math.E, exponentNumer / exponentDenom);
-//                 float value = leftTerm * rightTerm;
-
-//                 // setting value into gaussian matrix
-//                 gaussianMatrix[row][col] = value;
-//             }
-//         }
-
-//         // returning produced gaussian matrix
-//         return gaussianMatrix;
-//     }

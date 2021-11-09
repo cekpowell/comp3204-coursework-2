@@ -81,7 +81,7 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
      * @param targetPointColumn The column position of the target point.
      * @return The processed point value.
      */
-    public static float processPoint(FImage image, float[][] invertedKernel, int targetPointRow, int targetPointCol){
+    private static float processPoint(FImage image, float[][] invertedKernel, int targetPointRow, int targetPointCol){
 
         /**
          * Gathering image points within domain of kernel
@@ -106,37 +106,28 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
     ////////////////////
 
     /**
-     * Inverts the provided matrix. Flips the matrix vertically and
-     * horizontally.
+     * Inverts a matrix along both the horizontal and vertical axis.
      * 
-     * @param matrix The matrix to be inverted.
-     * @return The inverted matrix.
+     * @param matrix The matrix being inverted.
+     * @return The matrix inverted along it's horizontal and vertical axis.
      */
     private static float[][] invertMatrix(float[][] matrix){
 
-        /**
-         * creating inverted matrix
-         */
-        int rows = MyConvolution.getMatrixHeight(matrix);
-        int cols = MyConvolution.getMatrixWidth(matrix);
-        float[][] invertedMatrix = new float[cols][rows];
+        // creating empty matrix to store the inversion
+        float[][] invertedMatrix = new float[MyConvolution.getMatrixHeight(matrix)][MyConvolution.getMatrixWidth(matrix)];
 
-        /**
-         * Initializing inverted matrix
-         */
+        // variables representing the max row and column indexes
+        int maxRow = MyConvolution.getMatrixHeight(matrix) - 1;
+        int maxCol = MyConvolution.getMatrixWidth(matrix) - 1;
 
-        // iterating through all cells in matrix
-        for(int row = 0; row < rows; row++){
-            for(int col = 0; col < cols; col++){ 
-                // adding cell to inverted matrix
-                invertedMatrix[col][row] = matrix[row][col];
+        // iterating through the cells in the matrix and placing them into the inverted matrix
+        for(int row = 0; row <= maxRow; row++){
+            for(int col = 0; col <= maxCol; col++){
+                invertedMatrix[row][col] = matrix[maxRow - row][maxCol - col];
             }
         }
 
-        /**
-         * Returning inverted matrix
-         */
-
+        // returning the inverted matrix
         return invertedMatrix;
     }
 
@@ -151,7 +142,7 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
      * @param targetPointRow The row position of the target point.
      * @param targetPointColumn The column position of the target point.
      * 
-     * //TODO this method doesnt work for non-odd sized kernels (because of the reach and loop becomes out of bounds).
+     * //TODO this method doesnt work for non-odd sized kernels or empty kernels (because of the reach and loop becomes out of bounds).
      */
     private static float[][] getPointsInKernelDomain(FImage image, float[][] kernel, int targetPointRow, int targetPointCol){
         /**
@@ -197,7 +188,7 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
                     // adding point to points matrix
                     imagePoints[imagePointsRow][imagePointsCol] = point;
                 }
-                catch(IndexOutOfBoundsException e){
+                catch(Exception e){
                     // point outside boundary of image - zero padding.
                     imagePoints[imagePointsRow][imagePointsCol] = 0;
                 }
@@ -251,7 +242,12 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
      * @return The height of the matrix - i.e., the number of rows in the matrix.
      */
     private static int getMatrixHeight(float[][] matrix){
-        return matrix.length;
+        try{
+            return matrix.length;
+        }
+        catch(Exception e){
+            return 0;
+        }
     }
 
     /**
@@ -261,9 +257,14 @@ public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
      * @param matrix The matrix for which the width is being gathered.
      * @return The width of the matrix - the number of rows in the matrix.
      * 
-     * // TODO this method assumes the matrix is initialized with at least 1 element and is uniform.
+     * // TODO this method assumes the matrix is uniform.
      */
     private static int getMatrixWidth(float[][] matrix){
-        return matrix[0].length;
+        try{
+            return matrix[0].length;
+        }
+        catch(Exception e){
+            return 0;
+        }
     }
 }
