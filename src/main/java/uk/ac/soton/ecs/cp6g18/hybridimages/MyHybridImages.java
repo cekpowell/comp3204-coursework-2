@@ -1,4 +1,4 @@
-package uk.ac.soton.ecs.cp6g18;
+package uk.ac.soton.ecs.cp6g18.hybridimages;
 
 import org.openimaj.image.FImage;
 import org.openimaj.image.MBFImage;
@@ -108,6 +108,12 @@ public class MyHybridImages {
          */
 
         highPassImage = MyHybridImages.subtractMBFImages(image, lowPassImage);
+
+        /**
+         * Note: To display the high-pass version, the pixel values must be normalised by
+         * adding 0.5 to all - to account for the fact that some are negative and some are 
+         * positive due to the subtraction (remember pixel value are 0 to 1).
+         */
 
         // returning the high-pass version of the image.
         return highPassImage;
@@ -228,62 +234,6 @@ public class MyHybridImages {
     }
 
     /**
-     * Performs addition between two matricies. Each element in the first matrix is 
-     * added to the equivelent element in the second matrix. 
-     * 
-     * @param matrixA The first matrix involved in the addition.
-     * @param matrixB The second matrix involved in the addition.
-     * @return A matrix where each element is equal to the addition of the same elements 
-     * in the provided matricies.
-     * 
-     * //TODO this method assumes the matricies are the same size.
-     */
-    private static float[][] addMatricies(float[][] matrixA, float[][] matrixB){
-        // creating addition matrix
-        float[][] result = new float[MyHybridImages.getMatrixHeight(matrixA)][MyHybridImages.getMatrixWidth(matrixA)];
-
-        // calculating the addition of the two matricies
-        for(int row = 0; row < MyHybridImages.getMatrixHeight(result); row++){
-            for(int col = 0; col < MyHybridImages.getMatrixWidth(result); col++){
-                result[row][col] = matrixA[row][col] + matrixB[row][col];
-
-                // TODO handle case where value is > max value
-            }
-        }
-
-        // returning the added matrix
-        return result;
-    }
-
-    /**
-     * Performs subtraction between two matricies. Subtracts each element in the second
-     * matrix from the same element in the first matrix.
-     * 
-     * @param matrixA The matrix being subtracted from.
-     * @param matrixB The matrix being subtracted.
-     * @return A matrix where each element is equal to the subtraction of the same 
-     * elements in the provided matricies.
-     * 
-     * //TODO this method assumes the matricies are the same size.
-     */
-    private static float[][] subtractMatricies(float[][] matrixA, float[][] matrixB){
-        // creating addition matrix
-        float[][] result = new float[MyHybridImages.getMatrixHeight(matrixA)][MyHybridImages.getMatrixWidth(matrixA)];
-
-        // calculating the addition of the two matricies
-        for(int row = 0; row < MyHybridImages.getMatrixHeight(result); row++){
-            for(int col = 0; col < MyHybridImages.getMatrixWidth(result); col++){
-                result[row][col] = matrixA[row][col] - matrixB[row][col];
-                
-                // TODO handle case where value is less than zero?
-            }
-        }
-
-        // returning the added matrix
-        return result;
-    }
-
-    /**
      * Returns the height of the matrix - i.e., the number of
      * rows in the matrix.
      * 
@@ -307,46 +257,3 @@ public class MyHybridImages {
         return matrix[0].length;
     }
 }
-
-// /**
-//      * Produces a Gaussian matrix of the provided dimension using the provided sigma value.
-//      * 
-//      * @param width The width of the Gaussian matrix.
-//      * @param height The height of the Gaussian matrix.
-//      * @param sigma The sigma value for the Gaussian matrix.
-//      * @return The Gaussian matrix of the requested matrix and sigma value.
-//      * 
-//      * // TODO this method assumes the width and height are both odd (i.e., that there is a center point to the matrix)
-//      */
-//     public static float[][] getGaussianMatrix(int width, int height, float sigma){
-//         // initializing matrix
-//         float[][] gaussianMatrix = new float[width][height];
-
-//         // how much to reach left/right and up/down from center point (half size of kernel)
-//         int reachCol = Math.floorDiv(width, 2);
-//         int reachRow = Math.floorDiv(height, 2);
-
-//         /**
-//          * Populating matrix
-//          */
-//         for(int row = 0; row < height; row++){
-//             for(int col = 0; col < width; col++){
-//                 // x and y values
-//                 int x = -reachCol + col;
-//                 int y = -reachRow + row;
-
-//                 // calculating value using gaussian distribution formula
-//                 float leftTerm = (1 / (2 * (float) Math.PI * sigma * sigma));
-//                 float exponentNumer = - (x*x) - (y*y);
-//                 float exponentDenom = 2 * sigma * sigma;
-//                 float rightTerm = (float) Math.pow(Math.E, exponentNumer / exponentDenom);
-//                 float value = leftTerm * rightTerm;
-
-//                 // setting value into gaussian matrix
-//                 gaussianMatrix[row][col] = value;
-//             }
-//         }
-
-//         // returning produced gaussian matrix
-//         return gaussianMatrix;
-//     }
