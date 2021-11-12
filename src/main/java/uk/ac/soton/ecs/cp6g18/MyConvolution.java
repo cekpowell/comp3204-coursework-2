@@ -1,4 +1,4 @@
-package uk.ac.soton.ecs.cp6g18.hybridimages;
+package uk.ac.soton.ecs.cp6g18;
 
 import org.openimaj.image.FImage;
 import org.openimaj.image.processor.SinglebandImageProcessor;
