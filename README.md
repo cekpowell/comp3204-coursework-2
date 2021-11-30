@@ -8,9 +8,9 @@
   * **[Project Contents](#project-contents)**
 - **[Usage](#usage)**
   * **[Performing Template Convolution](#performing-template-convolution)**
-    * **[Example](#example)**
+    * **[Example](#example-1)**
   * **[Creating Hybrid Images](#creating-hybrid-images)**
-    * **[Example](#example)**
+    * **[Example](#example-2)**
 
 ---
 
