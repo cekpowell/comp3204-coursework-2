@@ -62,7 +62,7 @@ public void processImage(FImage image) {
 
 - The effect of applying the Gaussian Averaging to the image with different sized Gaussian Kernels:
 
-<p align="center"> <img width="600" alt="Screenshot 2021-11-30 at 21 44 54" src="https://user-images.githubusercontent.com/60888912/144133944-66247711-c48b-4d96-afd9-dcb15024733c.png"></p>
+<p align="center"> <img width="500" alt="Screenshot 2021-11-30 at 21 44 54" src="https://user-images.githubusercontent.com/60888912/144133944-66247711-c48b-4d96-afd9-dcb15024733c.png"></p>
 
 **<u>*Image here*</u>**
 
