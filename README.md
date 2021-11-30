@@ -20,7 +20,12 @@
 
 - Write programs to:
   - **1** - Perform [Template Convolution](http://comp3204.ecs.soton.ac.uk/cw/template_convolution_4th_edition.pdf) on images.
+
+<p align="center"> <img width="400" alt="Screenshot 2021-11-30 at 21 54 13" src="https://user-images.githubusercontent.com/60888912/144134909-c23ea353-d68a-43bf-9c79-2346b41152c6.png"></p>
+
   - **2** - Create [Hybrid Images](https://stanford.edu/class/ee367/reading/OlivaTorralb_Hybrid_Siggraph06.pdf) by combining the low frequencies of one image with the high frequencies of another.
+
+<p align="center"> <img width="250" alt="Screenshot 2021-11-30 at 21 54 13" src="https://user-images.githubusercontent.com/60888912/144134132-249ffdaf-f87e-43de-84ce-d08cc7b0e0f8.png"></p>
 
 - Using the [Open-IMAJ](http://openimaj.org/) library.
 
