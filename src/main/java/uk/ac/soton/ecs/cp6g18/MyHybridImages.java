@@ -9,7 +9,9 @@ import org.openimaj.image.processing.convolution.Gaussian2D;
  * 
  * Coursework 2: Exercise 2
  * 
- * Combining images together to create a hybrid image.
+ * Combining two images together to create a hybrid image.
+ * 
+ * @author Charles Powell
  */
 public class MyHybridImages {
 

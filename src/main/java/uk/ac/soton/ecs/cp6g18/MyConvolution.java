@@ -9,6 +9,8 @@ import org.openimaj.image.processor.SinglebandImageProcessor;
  * Coursework 2: Exercise 1
  * 
  * Performing template convolution on a given image.
+ * 
+ * @author Charles Powell
  */
 public class MyConvolution implements SinglebandImageProcessor<Float, FImage> {
 
